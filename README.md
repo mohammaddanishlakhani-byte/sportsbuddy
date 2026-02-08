@@ -45,7 +45,7 @@ A modern, real-time platform that connects sports enthusiasts worldwide. **Sport
 1. Clone the repository
 
    ```bash
-   git clone https://github.com/yourusername/sportsbuddy.git
+   git clone https://github.com/mohammaddanishlakhani-byte/sportsbuddy.git
    ```
 2. Open `index.html` in your browser
 3. No build process required 🎉
@@ -103,7 +103,7 @@ firebase deploy
 ## 📞 Contact
 
 * **Author:** Mohammad Danish Lakhani
-* **GitHub:** @mohammaddanishlakhani-byte
+* **GitHub:** [@mohammaddanishlakhani-byte](https://github.com/mohammaddanishlakhani-byte)
 * **Email:** [mohddanishlakhani@gmail.com](mailto:mohddanishlakhani@gmail.com)
 
 ---
