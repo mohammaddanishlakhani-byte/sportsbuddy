@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportsBuddy | Connect, Play & Compete</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="logo-circle">
+                    <i class="fas fa-running"></i>
+                </div>
+                <div class="logo-text">SportsBuddy</div>
+            </div>
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="loading-text">Loading sports community...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel (Hidden by default) -->
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-header">
+            <h3><i class="fas fa-crown"></i> Admin Dashboard</h3>
+            <button class="admin-close" onclick="toggleAdminPanel()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="admin-content">
+            <div class="admin-stats">
+                <div class="admin-stat">
+                    <div class="stat-value" id="totalMatches">0</div>
+                    <div class="stat-label">Total Matches</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                <div class="admin-stat">
+                    <div class="stat-value" id="todayMatches">0</div>
+                    <div class="stat-label">Today's Matches</div>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <h4>Quick Actions</h4>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="manageUsers()">
+                        <i class="fas fa-users"></i>
+                        Manage Users
+                    </button>
+                    <button class="action-btn" onclick="viewReports()">
+                        <i class="fas fa-chart-bar"></i>
+                        View Reports
+                    </button>
+                    <button class="action-btn" onclick="exportData()">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </button>
+                    <button class="action-btn danger" onclick="clearTestData()">
+                        <i class="fas fa-trash"></i>
+                        Clear Test Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <!-- Logo -->
+            <div class="nav-brand">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <div class="logo-text">
+                        <span class="logo-primary">Sports</span><span class="logo-secondary">Buddy</span>
+                        <span class="version-badge">PRO v3.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="nav-menu">
+                <div class="nav-links">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#" class="nav-link" onclick="showMyMatches()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>My Matches</span>
+                    </a>
+                    <a href="#" class="nav-link" onclick="showLeaderboard()">
+                        <i class="fas fa-trophy"></i>
+                        <span>Leaderboard</span>
+                    </a>
+                </div>
+
+                <!-- User Section -->
+                <div class="user-section">
+                    <div class="user-info" id="userInfo">
+                        <div class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name" id="userName">Guest</div>
+                            <div class="user-status" id="userStatus">
+                                <span class="status-dot"></span>
+                                Not signed in
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="user-actions">
+                        <button class="btn btn-primary btn-sm" id="authBtn" onclick="toggleAuthModal()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Sign In</span>
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="logoutBtn" onclick="logoutUser()" style="display: none;">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" id="adminBtn" onclick="toggleAdminPanel()" style="display: none;">
+                            <i class="fas fa-crown"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="mobile-user" id="mobileUser">
+                <div class="mobile-user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="mobile-user-details">
+                    <div class="mobile-user-name">Guest User</div>
+                    <div class="mobile-user-status">Tap to sign in</div>
+                </div>
+            </div>
+            <button class="mobile-menu-close" onclick="closeMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-items">
+            <a href="#" class="mobile-menu-item active" onclick="closeMobileMenu()">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="mobile-menu-item" onclick="showMyMatches(); closeMobileMenu();">
+                <i class="fas fa-calendar-alt"></i>
+                <span>My Matches</span>
+            </a>
+            <a href="#" class="mobile-menu-item" onclick="showLeaderboard(); closeMobileMenu();">
+                <i class="fas fa-trophy"></i>
+                <span>Leaderboard</span>
+            </a>
+            <a href="#" class="mobile-menu-item" onclick="toggleEventModal(); closeMobileMenu();">
+                <i class="fas fa-plus-circle"></i>
+                <span>Create Match</span>
+            </a>
+            <a href="#" class="mobile-menu-item" onclick="toggleAdminPanel(); closeMobileMenu();" id="mobileAdminBtn" style="display: none;">
+                <i class="fas fa-crown"></i>
+                <span>Admin Panel</span>
+            </a>
+            <div class="mobile-menu-divider"></div>
+            <div class="mobile-menu-footer">
+                <button class="btn btn-outline btn-block" onclick="toggleAuthModal(); closeMobileMenu();" id="mobileAuthBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+                <button class="btn btn-primary btn-block" onclick="toggleEventModal(); closeMobileMenu();">
+                    <i class="fas fa-plus"></i>
+                    Create Match
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-text">
+                        <i class="fas fa-bolt"></i>
+                        LIVE MATCHING
+                    </span>
+                    <span class="badge-sub">Real-time updates</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    <span class="title-line">Connect with</span>
+                    <span class="title-highlight">Sports Enthusiasts</span>
+                    <span class="title-line">Near You</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Join millions of athletes worldwide. Find matches, create events, 
+                    build connections, and compete in local sports communities.
+                </p>
+
+                <!-- Stats Cards -->
+                <div class="hero-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>1M+</h3>
+                            <p>Active Members</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>200+</h3>
+                            <p>Cities Worldwide</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>24/7</h3>
+                            <p>Live Matching</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search and Create -->
+                <div class="hero-search">
+                    <div class="search-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" 
+                                   id="searchInput" 
+                                   placeholder="Search by sport, city, venue, or skill level..." 
+                                   oninput="handleSearch()">
+                            <div class="search-actions">
+                                <button class="btn btn-secondary" onclick="clearSearch()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="btn btn-primary" onclick="toggleEventModal()">
+                                    <i class="fas fa-plus"></i>
+                                    Create Match
+                                </button>
+                            </div>
+                        </div>
+                        <div class="search-tags">
+                            <span class="tag-label">Popular:</span>
+                            <button class="tag" onclick="quickSearch('Football')">Football</button>
+                            <button class="tag" onclick="quickSearch('Basketball')">Basketball</button>
+                            <button class="tag" onclick="quickSearch('Tennis')">Tennis</button>
+                            <button class="tag" onclick="quickSearch('Cricket')">Cricket</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hero Wave -->
+        <div class="hero-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header with Filters -->
+            <div class="content-header">
+                <div class="header-left">
+                    <h2>
+                        <i class="fas fa-fire"></i>
+                        Live Sports Feed
+                    </h2>
+                    <p class="header-subtitle">Discover matches happening in real-time</p>
+                </div>
+                <div class="header-right">
+                    <div class="header-actions">
+                        <div class="live-indicator">
+                            <span class="pulse-dot"></span>
+                            <span>Live Database</span>
+                        </div>
+                        <button class="btn btn-outline btn-sm" onclick="syncFeed()" id="refreshBtn">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="toggleFilters()">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Panel -->
+            <div class="filter-panel" id="filterPanel">
+                <div class="filter-section">
+                    <h4>Sport Type</h4>
+                    <div class="filter-tags">
+                        <button class="filter-tag active" onclick="filterBySport('all')">
+                            <i class="fas fa-globe"></i>
+                            All Sports
+                        </button>
+                        <button class="filter-tag" onclick="filterBySport('Football')">
+                            <i class="fas fa-futbol"></i>
+                            Football
+                        </button>
+                        <button class="filter-tag" onclick="filterBySport('Basketball')">
+                            <i class="fas fa-basketball-ball"></i>
+                            Basketball
+                        </button>
+                        <button class="filter-tag" onclick="filterBySport('Tennis')">
+                            <i class="fas fa-baseball-ball"></i>
+                            Tennis
+                        </button>
+                        <button class="filter-tag" onclick="filterBySport('Cricket')">
+                            <i class="fas fa-baseball-ball"></i>
+                            Cricket
+                        </button>
+                        <button class="filter-tag" onclick="filterBySport('Badminton')">
+                            <i class="fas fa-table-tennis"></i>
+                            Badminton
+                        </button>
+                        <button class="filter-tag" onclick="filterBySport('Volleyball')">
+                            <i class="fas fa-volleyball-ball"></i>
+                            Volleyball
+                        </button>
+                        <button class="filter-tag" onclick="filterBySport('Running')">
+                            <i class="fas fa-running"></i>
+                            Running
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <h4>Skill Level</h4>
+                    <div class="skill-filters">
+                        <button class="skill-filter" onclick="filterBySkill('all')" data-skill="all">
+                            All Levels
+                        </button>
+                        <button class="skill-filter" onclick="filterBySkill('Beginner')" data-skill="beginner">
+                            Beginner
+                        </button>
+                        <button class="skill-filter" onclick="filterBySkill('Intermediate')" data-skill="intermediate">
+                            Intermediate
+                        </button>
+                        <button class="skill-filter" onclick="filterBySkill('Advanced')" data-skill="advanced">
+                            Advanced
+                        </button>
+                        <button class="skill-filter" onclick="filterBySkill('Professional')" data-skill="professional">
+                            Professional
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-section">
+                    <div class="filter-actions">
+                        <button class="btn btn-outline" onclick="clearAllFilters()">
+                            <i class="fas fa-times"></i>
+                            Clear All
+                        </button>
+                        <button class="btn btn-primary" onclick="applyFilters()">
+                            <i class="fas fa-check"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matches Grid -->
+            <div class="matches-grid" id="matchesGrid">
+                <!-- Loading Skeletons -->
+                <div class="skeleton-loader">
+                    <div class="match-card-skeleton"></div>
+                    <div class="match-card-skeleton"></div>
+                    <div class="match-card-skeleton"></div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No matches found</h3>
+                <p>Try adjusting your filters or create the first match in your area!</p>
+                <div class="empty-actions">
+                    <button class="btn btn-outline" onclick="clearAllFilters()">
+                        Clear Filters
+                    </button>
+                    <button class="btn btn-primary" onclick="toggleEventModal()">
+                        <i class="fas fa-plus-circle"></i>
+                        Create Match
+                    </button>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="load-more" id="loadMore">
+                <button class="btn btn-outline" onclick="loadMoreMatches()">
+                    <i class="fas fa-spinner fa-spin" id="loadMoreIcon"></i>
+                    Load More Matches
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <!-- Brand Column -->
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="logo-text">
+                            <span class="logo-primary">Sports</span><span class="logo-secondary">Buddy</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Connecting athletes worldwide through the power of sports. 
+                        Build communities, create memories, and stay active.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Platform</h4>
+                        <a href="#">How it Works</a>
+                        <a href="#">Features</a>
+                        <a href="#">Pricing</a>
+                        <a href="#">Mobile App</a>
+                        <a href="#">API</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Community</h4>
+                        <a href="#">Blog</a>
+                        <a href="#">Success Stories</a>
+                        <a href="#">Events</a>
+                        <a href="#">Partners</a>
+                        <a href="#">Ambassadors</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Support</h4>
+                        <a href="#">Help Center</a>
+                        <a href="#">Safety Guidelines</a>
+                        <a href="#">Contact Us</a>
+                        <a href="#">Report Issue</a>
+                        <a href="#">FAQ</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Legal</h4>
+                        <a href="#">Terms of Service</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Cookie Policy</a>
+                        <a href="#">Community Guidelines</a>
+                        <a href="#">GDPR</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="footer-newsletter">
+                <div class="newsletter-content">
+                    <h4>Stay Updated</h4>
+                    <p>Get the latest sports events and community news</p>
+                </div>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Subscribe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2024 SportsBuddy. All rights reserved.</p>
+                    <p class="internship-note">
+                        <i class="fas fa-graduation-cap"></i>
+                        Internship Project • Full Stack Development with Firebase
+                    </p>
+                </div>
+                <div class="footer-apps">
+                    <a href="#" class="app-badge">
+                        <i class="fab fa-apple"></i>
+                        <span>App Store</span>
+                    </a>
+                    <a href="#" class="app-badge">
+                        <i class="fab fa-google-play"></i>
+                        <span>Google Play</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal modal-auth">
+            <div class="modal-header">
+                <div class="modal-header-content">
+                    <h2>
+                        <i class="fas fa-running"></i>
+                        Welcome to SportsBuddy
+                    </h2>
+                    <p>Join our community of sports enthusiasts</p>
+                </div>
+                <button class="modal-close" onclick="toggleAuthModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Tab Navigation -->
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                    <button class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">
+                        <i class="fas fa-user-plus"></i>
+                        Register
+                    </button>
+                </div>
+
+                <!-- Login Form -->
+                <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginEmail">
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </label>
+                        <input type="email" 
+                               id="loginEmail" 
+                               placeholder="you@example.com"
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <div class="password-input">
+                            <input type="password" 
+                                   id="loginPassword" 
+                                   placeholder="Enter your password"
+                                   required>
+                            <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-options">
+                        <label class="checkbox">
+                            <input type="checkbox" id="rememberLogin">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password" onclick="showForgotPassword()">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+                        <span id="loginBtnText">Sign In</span>
+                        <i class="fas fa-spinner fa-spin" id="loginSpinner" style="display: none;"></i>
+                    </button>
+
+                    <div class="auth-divider">
+                        <span>or continue with</span>
+                    </div>
+
+                    <div class="social-auth">
+                        <button type="button" class="social-btn google" onclick="signInWithGoogle()">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button type="button" class="social-btn facebook" onclick="signInWithFacebook()">
+                            <i class="fab fa-facebook-f"></i>
+                            Facebook
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="registerName">
+                            <i class="fas fa-user"></i>
+                            Full Name
+                        </label>
+                        <input type="text" 
+                               id="registerName" 
+                               placeholder="John Doe"
+                               required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="registerEmail">
+                            <i class="fas fa-envelope"></i>
+                            Email Address
+                        </label>
+                        <input type="email" 
+                               id="registerEmail" 
+                               placeholder="you@example.com"
+                               required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="registerPassword">
+                                <i class="fas fa-lock"></i>
+                                Password
+                            </label>
+                            <div class="password-input">
+                                <input type="password" 
+                                       id="registerPassword" 
+                                       placeholder="At least 8 characters"
+                                       required
+                                       minlength="8">
+                                <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="registerConfirmPassword">
+                                <i class="fas fa-lock"></i>
+                                Confirm Password
+                            </label>
+                            <div class="password-input">
+                                <input type="password" 
+                                       id="registerConfirmPassword" 
+                                       placeholder="Confirm your password"
+                                       required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('registerConfirmPassword')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerLocation">
+                            <i class="fas fa-map-marker-alt"></i>
+                            City
+                        </label>
+                        <input type="text" 
+                               id="registerLocation" 
+                               placeholder="Your city"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox">
+                            <input type="checkbox" id="acceptTerms" required>
+                            <span class="checkmark"></span>
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" id="registerBtn">
+                        <span id="registerBtnText">Create Account</span>
+                        <i class="fas fa-spinner fa-spin" id="registerSpinner" style="display: none;"></i>
+                    </button>
+                </form>
+            </div>
+            
+            <div class="modal-footer">
+                <p>By continuing, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgotPasswordModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>Reset Password</h2>
+                <button class="modal-close" onclick="closeForgotPassword()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Enter your email address and we'll send you a link to reset your password.</p>
+                <div class="form-group">
+                    <input type="email" id="resetEmail" placeholder="you@example.com">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="resetPassword()">
+                    Send Reset Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Match Modal -->
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <div class="modal-header-content">
+                    <h2>
+                        <i class="fas fa-plus-circle"></i>
+                        Create New Match
+                    </h2>
+                    <p>Share your sports activity with the community</p>
+                </div>
+                <button class="modal-close" onclick="toggleEventModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="matchForm" onsubmit="createMatch(event)">
+                    <div class="form-section">
+                        <h4>
+                            <i class="fas fa-info-circle"></i>
+                            Match Details
+                        </h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="matchSport">
+                                    <i class="fas fa-running"></i>
+                                    Sport Type *
+                                </label>
+                                <select id="matchSport" required>
+                                    <option value="" disabled selected>Select a sport</option>
+                                    <option>Football</option>
+                                    <option>Basketball</option>
+                                    <option>Tennis</option>
+                                    <option>Cricket</option>
+                                    <option>Badminton</option>
+                                    <option>Volleyball</option>
+                                    <option>Table Tennis</option>
+                                    <option>Swimming</option>
+                                    <option>Running</option>
+                                    <option>Cycling</option>
+                                    <option>Yoga</option>
+                                    <option>Gym</option>
+                                    <option>Boxing</option>
+                                    <option>Martial Arts</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="matchSkill">
+                                    <i class="fas fa-chart-line"></i>
+                                    Skill Level *
+                                </label>
+                                <select id="matchSkill" required>
+                                    <option value="Beginner">Beginner</option>
+                                    <option value="Intermediate" selected>Intermediate</option>
+                                    <option value="Advanced">Advanced</option>
+                                    <option value="Professional">Professional</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Location Details
+                        </h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="matchCity">
+                                    <i class="fas fa-city"></i>
+                                    City *
+                                </label>
+                                <input type="text" 
+                                       id="matchCity" 
+                                       placeholder="e.g., Mumbai"
+                                       required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="matchArea">
+                                    <i class="fas fa-location-dot"></i>
+                                    Area / Venue *
+                                </label>
+                                <input type="text" 
+                                       id="matchArea" 
+                                       placeholder="e.g., Bandra Kurla Complex"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="matchVenueDetails">
+                                <i class="fas fa-info-circle"></i>
+                                Venue Details
+                            </label>
+                            <input type="text" 
+                                   id="matchVenueDetails" 
+                                   placeholder="e.g., Central Park, Court 3">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>
+                            <i class="fas fa-clock"></i>
+                            Date & Time
+                        </h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="matchDate">
+                                    <i class="fas fa-calendar"></i>
+                                    Date *
+                                </label>
+                                <input type="date" 
+                                       id="matchDate"
+                                       required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="matchTime">
+                                    <i class="fas fa-clock"></i>
+                                    Time *
+                                </label>
+                                <input type="time" 
+                                       id="matchTime"
+                                       required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="matchDuration">
+                                    <i class="fas fa-hourglass"></i>
+                                    Duration
+                                </label>
+                                <select id="matchDuration">
+                                    <option value="1">1 hour</option>
+                                    <option value="2" selected>2 hours</option>
+                                    <option value="3">3 hours</option>
+                                    <option value="4">4+ hours</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="matchPlayers">
+                                    <i class="fas fa-users"></i>
+                                    Players Needed
+                                </label>
+                                <select id="matchPlayers">
+                                    <option value="2">2 players</option>
+                                    <option value="4">4 players</option>
+                                    <option value="6">6 players</option>
+                                    <option value="8" selected>8 players</option>
+                                    <option value="10">10+ players</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>
+                            <i class="fas fa-align-left"></i>
+                            Additional Information
+                        </h4>
+                        <div class="form-group">
+                            <label for="matchDescription">
+                                <i class="fas fa-edit"></i>
+                                Match Description
+                            </label>
+                            <textarea id="matchDescription" 
+                                      placeholder="Any specific requirements, equipment needed, rules, or additional information..."
+                                      rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox">
+                                <input type="checkbox" id="equipmentProvided">
+                                <span class="checkmark"></span>
+                                Equipment will be provided
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" id="parkingAvailable">
+                                <span class="checkmark"></span>
+                                Parking available
+                            </label>
+                            <label class="checkbox">
+                                <input type="checkbox" id="changingRooms">
+                                <span class="checkmark"></span>
+                                Changing rooms available
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-notice">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>
+                            Your match will be visible to all users in your city. 
+                            Make sure to provide accurate details for better matching. 
+                            All matches must follow our community guidelines.
+                        </p>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="toggleEventModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="createMatchBtn">
+                            <i class="fas fa-broadcast-tower"></i>
+                            Publish Match
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Match Details Modal -->
+    <div class="modal-overlay" id="matchDetailsModal">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2 id="matchDetailsTitle">Match Details</h2>
+                <button class="modal-close" onclick="closeMatchDetails()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="matchDetailsContent">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
